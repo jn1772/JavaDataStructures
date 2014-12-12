@@ -2,7 +2,6 @@ package in.codebytes.dslib;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
 
 public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
     
@@ -76,7 +75,7 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
     
     private Node splitFourNode(Node node){ 
         node = rotateRight(node);
-        assert(isRed(node)):"Node was not red during split four";
+        assert(isRed(node)):"Node was not red during split four node operation";
         flipColors(node); 
         assert(!isRed(node.right)):"Node's right is not black";
         assert(!isRed(node.left)):"Node's left is not black";
@@ -96,8 +95,7 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
     
     private Node rotateRight(Node node){
         assert isRed(node.left):"Node.left is not Red - Rotate Right";
-        
-        System.out.println("Rotating Right");
+         
         Node t = node.left;
         node.left = t.right;
         t.right = node;
@@ -107,8 +105,7 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
     }
     
     private void flipColors(Node node){
-        
-        System.out.println("Flipped colors");
+         
         assert !isRed(node):"Assertion failed: parent node is not Black";
         assert isRed(node.right):"Assertion failed: node.right is not Red";
         assert isRed(node.left):"Assertion failed: node.left is not Red";
@@ -161,13 +158,9 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
     
     private Node deleteMin(Node node){ 
         if(node.left == null)return null;
-        
         if(!isRed(node.left) && !isRed(node.left.left)){node = moveRedLeft(node);}
-        
         node.left = deleteMin(node.left);
-        
         if(isRed(node.right))node = rotateLeft(node);
-        
         node.count = 1 + size(node.left) + size(node.right);
         return node;
     }
@@ -183,12 +176,9 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
             return node.left;
         }
         
-        if(isRed(node.left)) node = rotateRight(node);
-        
-        if(!isRed(node.right) && !isRed(node.right.left)){node = moveRedRight(node);}
-        
-        node.right = deleteMax(node.right);
-        
+        if(isRed(node.left)) node = rotateRight(node); 
+        if(!isRed(node.right) && !isRed(node.right.left)){node = moveRedRight(node);} 
+        node.right = deleteMax(node.right); 
         node.count = 1+size(node.left)+size(node.right);
         return node;
     }
@@ -201,8 +191,7 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
     
     private Node delete(Node node, Key key){
         int cmp = key.compareTo(node.key);
-        if(cmp < 0){
-            System.out.println("Going left");
+        if(cmp < 0){ 
             if(!isRed(node.left) && !isRed(node.left.left))
                 node = moveRedLeft(node);
             node.left = delete(node.left, key);
@@ -215,15 +204,12 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
             if(!isRed(node.right) && !isRed(node.right.left))
                 node = moveRedRight(node);
             
-            if(key.compareTo(node.key) == 0){
-                System.out.println("Found the node to delete");
+            if(key.compareTo(node.key) == 0){ 
                 Node min = findMin(node.right);
-                node.key = min.key;
-                System.out.println("Found the min element = "+min.key);
+                node.key = min.key; 
                 node.value = min.value;
                 node.right = deleteMin(node.right);
-            }else{
-            System.out.println("Going right");
+            }else{ 
              node.right = delete(node.right, key);
             }
         }
@@ -287,61 +273,5 @@ public class LeftLeaningRedBlackTree <Key extends Comparable<Key>, Value>{
             System.out.print(k+" ");
         }
         System.out.println();
-    }
-    
-    //Test
-    public static void main(String[] args){
-        LeftLeaningRedBlackTree<Integer, String> llrbt = new LeftLeaningRedBlackTree();
-        Scanner scan = new Scanner(System.in);
-        
-        //Display a Console Interface
-        while (true) {
-            System.out.println("\n1.- Add items\n"
-                    + "2.- Delete items\n"  
-                    + "3.- Floor\n"
-                    + "4.- Ceiling\n"
-                    + "5.- DeleteMin\n"
-                    + "6.- DeleteMax\n" 
-                    + "7.- Print tree\n");
-            int choice = scan.nextInt();
-
-            int item;
-
-            switch (choice) {
-                case 1:
-                    item = scan.nextInt(); 
-                    while (item != -999) {
-                        llrbt.put(item, "");
-                        item = scan.nextInt(); 
-                    }
-                    llrbt.printTree();
-                    break;
-                case 2: 
-                    System.out.println("Enter value to delete: ");
-                    item = scan.nextInt();
-                    llrbt.delete(item);
-                    llrbt.printTree(); 
-                    break;
-                case 3:  
-                    item = scan.nextInt(); 
-                    System.out.println(llrbt.floor(item));
-                    break;
-                case 4: 
-                    item = scan.nextInt();
-                    System.out.println(llrbt.ceiling(item));
-                    break;
-                case 5: 
-                    llrbt.deleteMin();
-                    llrbt.printTree();
-                    break;
-                case 6: 
-                    llrbt.deleteMax();
-                    llrbt.printTree();
-                    break; 
-                case 7:
-                    llrbt.printTree();
-                    break; 
-            }
-        }
-    }
+    }  
 }
